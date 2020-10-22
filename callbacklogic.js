@@ -1,8 +1,13 @@
-function CallbackLogic_2 () {
-    // input pins = "file"
-    // output pins = "good", "error" and "no response"
+function CallbackLogic () {
+    // input pins = "file"                            // ("timeout" will be added later)
+    // output pins = "good", "error" , "abort" and "no response"
+
     // Interim version! This will be upgraded later!
-    // In this version, the timer code is conflated with the Callbacklogic code, the timer should be a separate part.
+    // In this version, the timer code is conflated with the Callbacklogic code,
+    //   but, the timer should be a separate part.
+
+    // N.B. note the absence of "throw"... (not needed, throw is just another form of data transfer)
+    
     this.parent = null;
     this.id = id;
     this.isSchematic = false;
@@ -22,7 +27,8 @@ function CallbackLogic_2 () {
     };
     this.react = function (AGevent) {
 	var reader;
-	// lots of gory details here - we are at the interface between HTML (the O/S) and AG, so there are lots of details, by definition...
+	// lots of gory details here
+	// we are at the interface between HTML (the O/S) and AG, so there are lots of details, by definition...
 	// we are converting HTML events into AG events...
 	if (AGevent.pin == "file") {
 	    this.start(
@@ -49,12 +55,13 @@ function CallbackLogic_2 () {
 		kernel.io();
 	    } else if (AGevent.pin == "timeout") {
 		clearTimeout();
+		reader && reader.abort ();
 		kernel.send("no response", reader);
 		kernel.io();
 	    } else {
 		clearTimeout(); 
 		reader && reader.abort ();
-		send ("error", "event not understood by CallbackLogic: " + AGevent.pin);
+		send ("error", "event not understood by CallbackLogic part: " + AGevent.pin);
 	}
     }; // default
 };

@@ -1,6 +1,11 @@
-/* (again, this example is just an example of the very basic ideas) */
+/* (this example is just an example of the very basic ideas) */
 
-function FileSelectorComponent (id) {
+// inputs: none
+// outputs: changed
+//
+// special: JS calls "react()" to invoke the part
+//
+function FileSelector (id) {
     this.parent = null;
     this.id = id;
     this.isSchematic = false;
@@ -17,5 +22,10 @@ function FileSelectorComponent (id) {
 	}
     };
 
-    this.react = function (event) { }; // default
+    this.react = function () { // called from JS, hence, no parameters
+	console.log("fileSelector sendChanged()");
+        var fileDescriptor = document.getElementById("fileSelector").files[0];
+        kernel.send (fileSelector, {pin: 'changed', data: fileDescriptor});
+        kernel.io ();
+    };
 };
