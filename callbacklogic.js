@@ -24,6 +24,8 @@ function CallbackLogic (id) {
 	}
     };
 
+    this.var_timeout;
+    
     this.react = function (AGevent) {
 	var reader;
 	// lots of gory details here
@@ -39,13 +41,13 @@ function CallbackLogic (id) {
 						data: {reader: reader, HTMLevent: e}}); };
 	    reader.onerror = e => { this.react ({pin: "fileOnerror", data: reader}); };
 	    reader.onabort = e => { this.react ({pin: "fileOnabort", data: reader}); };
-	    setTimeout(
+	    this.var_timeout = setTimeout(
 		() => { this.react ({pin: "timeout", data: reader});},
 		1000);
 	    reader.readAsText (AGevent.data);
 	} else if (AGevent.pin == "fileOnload") {
 	    console.log("callback gets onload");
-	    clearTimeout();
+	    clearTimeout(this.var_timeout);
 	    kernel.send(this, 
 			{pin: "good", 
 			 data: {filename: AGevent.data.HTMLevent.data, 
@@ -53,23 +55,23 @@ function CallbackLogic (id) {
 	    kernel.io();
 	} else if (AGevent.pin == "fileOnerror") {
 	    console.log("callback gets onerror");
-	    clearTimeout();
+	    clearTimeout(this.var_timeout);
 	    kernel.send(this, {pin: "error", data: reader});
 	    kernel.io();
 	} else if (AGevent.pin == "fileOnabort") {
 	    console.log("callback gets onabort");
-	    clearTimeout();
+	    clearTimeout(this.var_timeout);
 	    kernel.send(this, {pin: "abort", data: reader});
 	    kernel.io();
 	} else if (AGevent.pin == "timeout") {
 	    console.log("callback gets timeout");  throw "FATAL";
-	    clearTimeout();
+	    clearTimeout(this.var_timeout);
 	    reader && reader.abort ();
 	    kernel.send(this, {pin: "no response", data: reader});
 	    kernel.io();
 	} else {
 	    console.log("callback gets ???");  throw "FATAL";
-	    clearTimeout(); 
+	    clearTimeout(this.var_timeout); 
 	    reader && reader.abort ();
 	    kernel.send (this, {pin: "fatal", data: "event not understood by CallbackLogic part: " + AGevent.pin});
 	}
