@@ -32,12 +32,9 @@ function Kernel (top) {
     this.topPart = top;
     this.allParts = [];
     this.findWire = function (schematic, senderPart, senderPin) {
-	console.log("findwire " + schematic.toString() + " " + senderPart.toString() + " " + senderPin);
 	var i;
 	for (i = 0; i < schematic.wires.length ; i += 1) {
 	    var sender = schematic.wires[i].sender;
-	    console.log(sender.part == senderPart);
-	    console.log(sender.pin == senderPin);
 	    if (sender.part == senderPart && sender.pin == senderPin) {
 		return schematic.wires[i];
 	    }
@@ -58,7 +55,6 @@ function Kernel (top) {
     };
 
     this.dispatch = function () {
-	console.log("dispatch");
 	while (this.topPart.hasInputs()) {
 	    this.topPart.consumeOneEventIfReady();
 	}

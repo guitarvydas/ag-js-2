@@ -12,7 +12,6 @@ function Display (id) {
     };
     this.consumeOneEventIfReady = function () {
 	if (this.isReady()) {
-	    console.log("Display consume");
 	    var event = this.inputQueue.pop ();
 	    this.react (event);
 	}
@@ -23,7 +22,6 @@ function Display (id) {
 	    var filename = AGevent.data.filename;
 	    var contents = AGevent.data.contents;
 	    var element = document.getElementById(this.id);
-	    console.log(element);
 	    document.getElementById(this.id).innerHTML =
 		"FILE REQUESTED: " + filename +
 		"<BR>FILE CONTENTS (example2):<BR>" + contents;

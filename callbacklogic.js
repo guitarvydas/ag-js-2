@@ -17,7 +17,6 @@ function CallbackLogic (id) {
 	return (0 < this.inputQueue.length);
     };
     this.consumeOneEventIfReady = function () {
-	console.log("Callback consume");
 	if (this.isReady()) {
 	    var event = this.inputQueue.pop ();
 	    this.react (event);
@@ -31,7 +30,6 @@ function CallbackLogic (id) {
 	// lots of gory details here
 	// we are at the interface between HTML (the O/S) and AG, so there are lots of details, by definition...
 	// we are converting HTML events into AG events...
-	console.log("callback logic gets " + AGevent.pin + " " + AGevent.data+toString());
 	if (AGevent.pin == "file") {
 	    // start the reader, set up callbacks, set timeout
 	    // (this is interim code and will be upgraded later, e.g. timer will
@@ -46,7 +44,6 @@ function CallbackLogic (id) {
 		1000);
 	    reader.readAsText (AGevent.data);
 	} else if (AGevent.pin == "fileOnload") {
-	    console.log("callback gets onload");
 	    clearTimeout(this.var_timeout);
 	    kernel.send(this, 
 			{pin: "good", 
@@ -54,23 +51,19 @@ function CallbackLogic (id) {
 				contents: AGevent.data.HTMLevent.target.result}});
 	    kernel.io();
 	} else if (AGevent.pin == "fileOnerror") {
-	    console.log("callback gets onerror");
 	    clearTimeout(this.var_timeout);
 	    kernel.send(this, {pin: "error", data: reader});
 	    kernel.io();
 	} else if (AGevent.pin == "fileOnabort") {
-	    console.log("callback gets onabort");
 	    clearTimeout(this.var_timeout);
 	    kernel.send(this, {pin: "abort", data: reader});
 	    kernel.io();
 	} else if (AGevent.pin == "timeout") {
-	    console.log("callback gets timeout");  throw "FATAL";
 	    clearTimeout(this.var_timeout);
 	    reader && reader.abort ();
 	    kernel.send(this, {pin: "no response", data: reader});
 	    kernel.io();
 	} else {
-	    console.log("callback gets ???");  throw "FATAL";
 	    clearTimeout(this.var_timeout); 
 	    reader && reader.abort ();
 	    kernel.send (this, {pin: "fatal", data: "event not understood by CallbackLogic part: " + AGevent.pin});
