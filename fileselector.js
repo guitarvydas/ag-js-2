@@ -1,10 +1,12 @@
 /* (this example is just an example of the very basic ideas) */
 
 // inputs: none
-// outputs: changed
+// outputs: "changed"
+
 //
 // special: JS calls "react()" to invoke the part
 //
+
 function FileSelector (id) {
     this.parent = null;
     this.id = id;
@@ -23,9 +25,9 @@ function FileSelector (id) {
     };
 
     this.react = function () { // called from JS, hence, no parameters
-	console.log("fileSelector sendChanged()");
-        var fileDescriptor = document.getElementById("fileSelector").files[0];
-        kernel.send (fileSelector, {pin: 'changed', data: fileDescriptor});
+	console.log("fileSelector react()");
+        var fileDescriptor = document.getElementById(this.id).files[0];
+        kernel.send (this, {pin: 'changed', data: fileDescriptor});
         kernel.io ();
     };
 };

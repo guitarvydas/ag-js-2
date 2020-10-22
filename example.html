@@ -6,7 +6,10 @@
     <script src="./schematic.js"></script>
     <script src="./fileselector.js"></script>
     <script src="./callbacklogic.js"></script>
-    <script src="./text.js"></script>
+    <script src="./display.js"></script>
+    <script src="./errorhandler.js"></script>
+    <script src="./aborthandler.js"></script>
+    <script src="./noresponsehandler.js"></script>
     
   </head>
 
@@ -14,68 +17,69 @@
     <h1></h1>
     <div id="topLevel">
       <script>
-	var topLevel = new SchematicComponent("topLevel");  // see initialization, below
+	var var_topLevel = new Schematic("var_topLevel");  // see initialization, below
       </script>
       
       
-      <input type="file" id="part1" onchange="react()"></input>
+      <input type="file" id="FileSelector" onchange="fileSelectorGo()"></input>
       <script>
-	var fileSelector = new FileSelectorComponent ("fileSelector");
+	var var_FileSelector = new FileSelector ("FileSelector");
+	function fileSelectorGo() { var_FileSelector.react (); };
       </script>
 
       <script>
-	var callbackLogic = new CallbackLogic ();
+	var var_CallbackLogic = new CallbackLogic ("CallbackLogic");
       </script>
 
       <script>
 	var wireFromFileSelectorToCallbackLogic = 
-	    new wire ({ sender: {part: FileSelector, pin: null},
-			receivers: [{part: CallbackLogic, pin: "file"}]});
+	    new Wire ({ sender: {part: var_FileSelector, pin: "changed"},
+			receivers: [{part: var_CallbackLogic, pin: "file"}]});
       </script>
 
       <p id="Display"></p>
       <script>
-	var Display = new Display ("Display");
+	var var_Display = new Display ("Display");
       </script>
 
       <script>
 	var wireFromCallbackLogicToDisplay =
-	    new wire ({ sender: {part: CallbackLogic, pin: "good"},
-			receivers: [ {part: Display, pin: "file descriptor"} ]});
+	    new Wire ({ sender: {part: var_CallbackLogic, pin: "good"},
+			receivers: [ {part: var_Display, pin: "file descriptor"} ]});
       </script>
 
       <script>
-	var ErrorHandler = new ErrorHandler ();
-	var AbortHandler = new AbortHandler ();
-	var NoResponseHandler = new NoResponseHandler ();
+	var var_ErrorHandler = new ErrorHandler ();
+	var var_AbortHandler = new AbortHandler ();
+	var var_NoResponseHandler = new NoResponseHandler ();
 
 	var wireFromCallbackLogicToErrorHandler =
-	    new wire ({ sender: {part: CallbackLogic, pin: "error"},
-			receivers: [{part: ErrorHandler, pin: "in"}]});
+	    new Wire ({ sender: {part: var_CallbackLogic, pin: "error"},
+			receivers: [{part: var_ErrorHandler, pin: "in"}]});
 	var wireFromCallbackLogicToAbortHandler =
-	    new wire ({ sender: {part: CallbackLogic, pin: "abort"},
-			receivers: [{part: AbortHandler, pin: "in"}]});
+	    new Wire ({ sender: {part: var_CallbackLogic, pin: "abort"},
+			receivers: [{part: var_AbortHandler, pin: "in"}]});
 	var wireFromCallbackLogicToNoResponseHandler =
-	    new wire ({ sender: {part: CallbackLogic, pin: "no response"},
-			receivers: [{part: NoResponseHandler, pin: "in"}]});
+	    new Wire ({ sender: {part: var_CallbackLogic, pin: "no response"},
+			receivers: [{part: var_NoResponseHandler, pin: "in"}]});
       </script>
       
       <script>
 	
-	// initialization of topLevel part
-	topLevel.initializeParts( [FileSelector, Display, ErrorHandler, AbortHandler, NoResponseHandler] );
+	// initialization of var_topLevel part
+	var_topLevel.initializeParts( [var_FileSelector, var_Display, var_CallbackLogic, var_ErrorHandler, var_AbortHandler, var_NoResponseHandler] );
 
-	topLevel.initializeWires ([
+	var_topLevel.initializeWires ([
 	    wireFromFileSelectorToCallbackLogic,
 	    wireFromCallbackLogicToDisplay,
-	    wireFromCallbackLogictoErrorHandler,
-	    wireFromCallbackLogictoAbortHandler,
-	    wireFromCallbackLogictoNoResponseHandler
+	    wireFromCallbackLogicToErrorHandler,
+	    wireFromCallbackLogicToAbortHandler,
+	    wireFromCallbackLogicToNoResponseHandler
 	]);
       </script>
 
       <script>
-	var kernel = new Kernel (topLevel);
+	var kernel = new Kernel (var_topLevel);
       </script>
 
     </div>

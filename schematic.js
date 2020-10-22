@@ -1,4 +1,4 @@
-function SchematicComponent () {
+function Schematic () {
     this.isSchematic = true; 
     this.inputQueue = []; 
     this.isBusy = function () { return this.parts.some(isBusy); };
